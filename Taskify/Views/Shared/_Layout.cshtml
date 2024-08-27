@@ -1,0 +1,489 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/Content/site.css" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    @if (ViewBag.IsLoginPage == null || ViewBag.IsLoginPage == false)
+    { 
+        <nav id="thenavbar" class="navbar navbar-expand-sm navbar-light bg-primary">
+            <div class="container">
+                @Html.ActionLink("Taskify", "Index", "Duties", new { area = "" }, new { @class = "navbar-brand" })
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li>@Html.ActionLink("Görevler", "Index", "Duties", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Arşivlenmiş Görevler", "Index", "Archive", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li><a href="#" id="logoutLink">Çıkış Yap</a></li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    }
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+
+    @Html.Partial("~/Views/Duties/_CreateModal.cshtml")
+    @Html.Partial("~/Views/Duties/_EditModal.cshtml")
+    @Html.Partial("~/Views/Duties/_DetailModal.cshtml")
+    @Html.Partial("~/Views/Duties/_DeleteModal.cshtml")
+
+    @Html.Partial("~/Views/Archive/_ArchiveModal.cshtml")
+    @Html.Partial("~/Views/Archive/_UnarchiveModal.cshtml")
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Moment.js (Eğer kullanıyorsanız) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+    <!-- Your custom script -->
+
+</body>
+</html>
+<script>
+$(document).ready(function () {
+    //GÖREV EKLEME
+    $("#createForm").submit(function (event) {
+        event.preventDefault();
+        var form = $(this);
+        $.ajax({
+            type: "POST",
+            url: form.attr("action"),
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    $("#createModal").modal('hide');
+                    location.reload();
+                } else {
+                    alert("Bir hata oluştu!");
+                }
+            },
+            error: function () {
+                alert("Bir hata oluştu!");
+            }
+        });
+    });
+    $(".openCreateModal").click(function () {
+        $("#createModal").modal('show');
+    });
+    $("#closecreateModalLabel").click(function () {
+        $("#createModal").modal('hide');
+    });
+    $("#openCreateModal").click(function () {
+        $("#createModal").modal('show');
+    });
+
+
+    // GÖREV GÜNCELLEME
+    $("#editForm").submit(function (event) {
+        event.preventDefault();
+        var form = $(this);
+        $.ajax({
+            type: "POST",
+            url: form.attr("action"),
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    $("#editModal").modal('hide');
+                    location.reload();
+                } else {
+                    alert("Bir hata oluştu!");
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Bir hata oluştu! Hata: " + error);
+            }
+        });
+    });
+    var editUrl = "@Url.Action("Edit", "Duties")";
+    $(".btn-warning").click(function () {
+        var id = $(this).data("id");
+        $.get(editUrl, { id: id }, function (data) {
+            if (data) {
+                console.log('Gelen data:', data);
+                $("#editDutyName").val(data.DutyName);
+                $("#editDescription").val(data.Description);
+                $("#editStatus").val(data.Status);
+                var formattedDate = moment(data.DueDate).format('YYYY-MM-DD');
+                $("#editDueDate").val(formattedDate);
+                $("#editDutyId").val(data.Id);
+                $("#editModal").modal('show');
+            } else {
+                console.log("Veri bulunamadı");
+            }
+        }).fail(function () {
+            console.log("İstek başarısız oldu.");
+        });
+    });
+    $("#closeeditModal").click(function () {
+        $("#editModal").modal('hide');
+    });
+    $("#closedetailModal").click(function () {
+        $("#detailModal").modal('hide');
+    });
+
+
+  // GÖREVİN DETAYINI GÖSTERME
+var detailUrl = "@Url.Action("Details", "Duties")";
+$(".btn-info").click(function () {
+    var id = $(this).data("id");
+    $.get(detailUrl, { id: id }, function (data) {
+        if (data) {
+            console.log('Gelen data:', data);
+            $("#detailDutyName").val(data.DutyName);
+            $("#detailDescription").val(data.Description);
+            $("#detailStatus").val(data.Status);
+            var formattedDate = moment(data.DueDate).format('YYYY-MM-DD');
+            $("#detailDueDate").val(formattedDate);            $("#detailDutyId").val(data.Id);
+            $("#detailModal").modal('show');
+        } else {
+            console.log("Veri bulunamadı");
+        }
+    }).fail(function () {
+        console.log("İstek başarısız oldu.");
+    });
+});
+
+
+    //GÖREVİ SİLME
+    var deleteUrl = "@Url.Action("Delete", "Duties")";
+    $(".delete-duty-btn").click(function () {
+        var id = $(this).data("id");
+        $("#deleteDutyId").val(id);
+        $("#deleteModal").modal('show');
+    });
+    $("#confirmDelete").click(function () {
+        var id = $("#deleteDutyId").val();
+        $.ajax({
+            type: "POST",
+            url: deleteUrl,
+            data: { id: id },
+            success: function (response) {
+                if (response.success) {
+                    $("#deleteModal").modal('hide');
+                    location.reload();
+                } else {
+                    alert("Bir hata oluştu: " + response.message);
+                }
+            },
+            error: function () {
+                alert("Bir hata oluştu!");
+            }
+        });
+    });
+    $("#closedeleteModal").click(function () {
+        $("#deleteModal").modal('hide');
+    });
+
+    $("#canceldelete").click(function () {
+        $("#deleteModal").modal('hide');
+    });
+
+
+    // GÖREVİ ARŞİVLEME
+   var archiveUrl = "@Url.Action("Archive", "Archive")";
+   $(".archive-duty-btn").click(function () {
+       var id = $(this).data("id");
+       $("#archiveDutyId").val(id);
+       $("#archiveModal").modal('show');
+   });
+   $("#confirmArchive").click(function () {
+       var id = $("#archiveDutyId").val();
+      $.ajax({
+    type: "POST",
+    url: archiveUrl,
+    contentType: "application/json",
+    data: JSON.stringify({ id: id }),
+    success: function (response) {
+        if (response.success) {
+            $("#archiveModal").modal('hide');
+            location.reload();
+        } else {
+            alert("Bir hata oluştu: " + response.message);
+        }
+    },
+    error: function () {
+        alert("Bir hata oluştu!");
+    }
+});
+   });
+    $("#closearchiveModal").click(function () {
+        $("#archiveModal").modal('hide');
+    });
+    $("#cancelarchive").click(function () {
+        $("#archiveModal").modal('hide');
+    });
+
+
+    //GÖREVİ ARŞİVDEN ÇIKARMA
+   var unarchiveUrl = "@Url.Action("Unarchive", "Archive")";
+   $(".unarchive-duty-btn").click(function () {
+       var id = $(this).data("id");
+       $("#unarchiveDutyId").val(id);
+       $("#unarchiveModal").modal('show');
+   });
+   $("#confirmUnarchive").click(function () {
+       var id = $("#unarchiveDutyId").val();
+      $.ajax({
+    type: "POST",
+    url: unarchiveUrl,
+    contentType: "application/json",
+    data: JSON.stringify({ id: id }),
+    success: function (response) {
+        if (response.success) {
+            $("#unarchiveModal").modal('hide');
+            location.reload();
+        } else {
+            alert("Bir hata oluştu: " + response.message);
+        }
+    },
+    error: function () {
+        alert("Bir hata oluştu!");
+    }
+});
+   });
+    $("#closeunarchiveModal").click(function () {
+        $("#unarchiveModal").modal('hide');
+    });
+    $("#cancelunarchive").click(function () {
+        $("#unarchiveModal").modal('hide');
+    });
+
+
+
+    //ÇIKIŞ YAP
+     $('#logoutLink').click(function (event) {
+                event.preventDefault(); 
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("Logout", "User")', 
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            alert('Çıkış yapma işlemi sırasında bir hata oluştu: ' + response.error);
+                        }
+                    },
+                    error: function () {
+                        alert('Çıkış yapma işlemi sırasında bir hata oluştu.');
+                    }
+                });
+            });
+
+
+
+});
+</script>
+
+        <style>
+            body {
+                font-family: 'Lato', sans-serif;
+                color: #212121;
+                background-color: #F0F4F8;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Başlık */
+            h2 {
+                color: #303F9F;
+                font-family: 'Poppins', sans-serif;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+
+            /* Form ve Butonlar */
+            form {
+                margin-bottom: 30px;
+            }
+
+            .btn {
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                color: #FFFFFF;
+                border: none;
+            }
+
+            .btn-primary {
+                background-color: #6200EA;
+            }
+
+                .btn-primary:hover {
+                    background-color: #5B00D1;
+                    transform: translateY(-2px);
+                }
+
+            .btn-secondary {
+                background-color: #FF5722;
+            }
+
+                .btn-secondary:hover {
+                    background-color: #E64A19;
+                    transform: translateY(-2px);
+                }
+
+            .btn-info {
+                background-color: #03DAC6;
+            }
+
+                .btn-info:hover {
+                    background-color: #03A89E;
+                    transform: translateY(-2px);
+                }
+
+            .btn-warning {
+                background-color: #FF9800; /* Turuncu renk */
+            }
+
+                .btn-warning:hover {
+                    background-color: #F57C00;
+                    transform: translateY(-2px);
+                }
+
+            .btn-danger {
+                background-color: #B00020;
+            }
+
+                .btn-danger:hover {
+                    background-color: #C62828;
+                    transform: translateY(-2px);
+                }
+
+            /* Tablolar */
+            .table {
+                width: 100%;
+                margin-bottom: 1rem;
+                background-color: #FFFFFF;
+                border-radius: 12px;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+
+                .table thead th {
+                    background-color: #F7F7F7;
+                    color: #212121;
+                }
+
+                .table tbody tr:hover {
+                    background-color: #E3F2FD;
+                }
+
+            /* Form Elemanları */
+            input, select, textarea {
+                border-radius: 8px;
+                border: 1px solid #DDDDDD;
+            }
+
+                input:focus, select:focus, textarea:focus {
+                    border-color: #6200EA;
+                    box-shadow: 0 0 6px rgba(98, 0, 234, 0.3);
+                }
+
+            /* Modal */
+            .modal-content {
+                border-radius: 12px;
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Navbar */
+            .navbar {
+                background-color: 5f97d3;
+            }
+
+            .navbar-brand {
+                color: #FFFFFF;
+            }
+
+                .navbar-brand:hover {
+                    color: #E0E0E0;
+                }
+
+            .nav-link {
+                color: #FFFFFF;
+            }
+
+                .nav-link:hover {
+                    color: #E0E0E0;
+                }
+
+            .gradient-bg {
+                background: linear-gradient(135deg, #6200EA 0%, #03DAC6 100%);
+            }
+
+
+
+            .navbar {
+                background-color: #343a40; 
+            }
+
+            .navbar-dark .navbar-nav .nav-link {
+                color: #ffffff; 
+            }
+
+                .navbar-dark .navbar-nav .nav-link:hover {
+                    color: #f8f9fa; 
+                }
+
+            .navbar-dark .navbar-brand {
+                color: #ffffff; 
+            }
+
+                .navbar-dark .navbar-brand:hover {
+                    color: #f8f9fa;
+                }
+
+            .navbar .navbar-toggler {
+                border-color: #ffffff; 
+            }
+
+            .navbar .navbar-toggler-icon {
+                background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"%3E%3Cpath stroke="%23ffffff" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"/%3E%3C/svg%3E'); /* Toggler ikonunun rengi beyaz */
+            }
+            /* Temel stil ayarları */
+            #logoutLink {
+                display: inline-block;
+                padding: 10px 20px;
+                font-size: 16px;
+                font-family: Arial, sans-serif;
+                color: #fff;
+                background-color: 0d6efd; /* Kırmızı arka plan */
+                border: none;
+                border-radius: 5px;
+                text-decoration: none;
+                text-align: center;
+                transition: background-color 0.3s ease, transform 0.3s ease;
+            }
+
+                /* Buton üzerine gelindiğinde */
+                #logoutLink:hover {
+                    background-color: #1675f9; /* Koyu kırmızı arka plan */
+                    transform: scale(1.05); /* Küçük bir büyütme efekti */
+                }
+
+                /* Butona tıklanma efekti */
+                #logoutLink:active {
+                    background-color: #3183f7; /* Daha da koyu kırmızı arka plan */
+                    transform: scale(1); /* Büyütme efekti kaldırılır */
+                }
+        </style>

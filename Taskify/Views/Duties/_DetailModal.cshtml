@@ -1,0 +1,42 @@
+﻿<!-- Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">Görev Detayı</h5>
+                <button type="button" id="closedetailModal" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" action="@Url.Action("Details", "Duties")" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        <label for="detailDutyName">Görev Adı</label>
+                        <input type="text" class="form-control" id="detailDutyName" name="DutyName" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="detailDescription">Açıklama</label>
+                        <textarea class="form-control" id="detailDescription" name="Description"></textarea>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="detailStatus">Durum</label>
+                        <select id="detailStatus" name="Status" class="form-control" disabled>
+                            <option value="0">Bekliyor</option>
+                            <option value="1">Devam Ediyor</option>
+                            <option value="2">Tamamlandı</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="detailDueDate">Son Tarih</label>
+                        <input type="date" class="form-control" id="detailDueDate" name="DueDate" readonly />
+                    </div>
+                    <input type="hidden" id="detailDutyId" name="Id" />
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

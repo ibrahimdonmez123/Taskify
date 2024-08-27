@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Taskify.Models.Duty>
+@{
+    ViewBag.Title = "Arşivlenmiş Görev Listesi";
+}
+
+<h2>Arşivlenmiş Görevlerin Listesi</h2>
+
+
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Görev Adı</th>
+            <th>Açıklama</th>
+            <th>Durum</th>
+            <th>Son Tarih</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var duty in Model)
+        {
+            <tr>
+                <td>@duty.DutyName</td>
+                <td>@duty.Description</td>
+                <td>@duty.Status</td>
+                <td>@duty.DueDate</td>
+                <td>
+                   
+                    <button type="button" class="btn btn-secondary unarchive-duty-btn" data-id="@duty.Id">Arşivden Çıkart</button>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

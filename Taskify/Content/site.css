@@ -1,0 +1,124 @@
+/* Genel Ayarlar */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #F5F5F5;
+    color: #333333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Baþlýk ve Navbar */
+.navbar {
+    background-color: #303F9F; /* Koyu Mavi */
+}
+
+.navbar-brand {
+    color: #FFFFFF;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-link {
+    color: #FFFFFF;
+    font-size: 1rem;
+}
+
+    .nav-link:hover {
+        color: #FF4081; /* Pembe */
+    }
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,..."); /* Varsayýlan ikon */
+}
+
+/* Butonlar */
+.btn {
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #4CAF50; /* Yeþil */
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+    .btn:hover {
+        background-color: #388E3C; /* Daha Koyu Yeþil */
+        transform: scale(1.05);
+    }
+
+    .btn:focus {
+        outline: none;
+    }
+
+/* Kartlar ve Paneller */
+.card, .panel {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #FFFFFF;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.card-header, .panel-header {
+    background-color: #F5F5F5;
+    color: #333333;
+}
+
+/* Tablolar */
+.table thead th {
+    background-color: #F5F5F5;
+    color: #333333;
+}
+
+.table tbody tr:hover {
+    background-color: #E0E0E0;
+}
+
+.table td, .table th {
+    padding: 15px;
+    border: 1px solid #DDDDDD;
+}
+
+/* Form Elemanlarý */
+input, select, textarea {
+    border-radius: 4px;
+    border: 1px solid #DDDDDD;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    input:focus, select:focus, textarea:focus {
+        border-color: #3F51B5; /* Koyu Mavi */
+        box-shadow: 0 0 4px rgba(63, 81, 181, 0.3);
+        outline: none;
+    }
+
+/* Transisyonlar */
+.transition {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Responsive Tasarým */
+@media (max-width: 768px) {
+    .navbar {
+        text-align: center;
+    }
+
+    .navbar-nav {
+        display: block;
+    }
+
+    .navbar-collapse {
+        display: block !important;
+    }
+
+    .container.body-content {
+        padding: 15px;
+    }
+}

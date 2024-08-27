@@ -1,0 +1,186 @@
+﻿@model IEnumerable<Taskify.Models.Duty>
+@{
+    ViewBag.Title = "Görev Listesi";
+}
+
+<h2>Görev Listesi</h2>
+
+<form method="get" action="@Url.Action("Index")">
+    <div class="row mb-3 align-items-center">
+        <div class="col-md-3">
+            <!-- Ekleme Butonu -->
+            <button type="button" style="margin-bottom:-12px" id="openCreateModal" class="btn btn-primary">Görev Ekle</button>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="search" class="sr-only">Arama:</label>
+                <input type="text" id="search" name="search" class="form-control" placeholder="Görev Adı veya Açıklama Ara" />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="status" class="sr-only">Durum:</label>
+                <select id="status" name="status" class="form-control">
+                    <option value="">Tüm Görevler</option>
+                    @foreach (Taskify.Models.DutyStatus status in Enum.GetValues(typeof(Taskify.Models.DutyStatus)))
+                    {
+                        <option value="@status">@status.ToString()</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" style="margin-bottom:-15px" class="btn btn-secondary">Filtrele</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Görev Adı</th>
+            <th>Açıklama</th>
+            <th>Durum</th>
+            <th>Son Tarih</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var duty in Model)
+        {
+            <tr>
+                <td>@duty.DutyName</td>
+                <td>@duty.Description</td>
+                <td>@duty.Status</td>
+                <td>@duty.DueDate</td>
+                <td>
+                    <button type="button" class="btn btn-info" data-id="@duty.Id">Detay</button>
+                    <button type="button" class="btn btn-warning" data-id="@duty.Id">Düzenle</button>
+                    <button type="button" class="btn btn-danger delete-duty-btn" data-id="@duty.Id">Sil</button>
+                    <button type="button" class="btn btn-secondary archive-duty-btn" data-id="@duty.Id">Arşivle</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<style>
+    body {
+        font-family: 'Lato', sans-serif;
+        color: #212121;
+        background-color: #F0F4F8;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Başlık */
+    h2 {
+        color: #303F9F;
+        font-family: 'Poppins', sans-serif;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    /* Form ve Butonlar */
+    form {
+        margin-bottom: 30px;
+    }
+
+    .btn {
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: #6200EA;
+        border: none;
+        color: #FFFFFF;
+    }
+
+    .btn-primary:hover {
+        background-color: #5B00D1;
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        background-color: #FF5722;
+        border: none;
+        color: #FFFFFF;
+    }
+
+    .btn-secondary:hover {
+        background-color: #E64A19;
+        transform: translateY(-2px);
+    }
+
+    .btn-info {
+        background-color: #03DAC6;
+        border: none;
+        color: #FFFFFF;
+    }
+
+    .btn-info:hover {
+        background-color: #03A89E;
+        transform: translateY(-2px);
+    }
+
+    .btn-warning {
+        background-color: #FFEB3B;
+        border: none;
+        color: #212121;
+    }
+
+    .btn-warning:hover {
+        background-color: #FDD835;
+        transform: translateY(-2px);
+    }
+
+    .btn-danger {
+        background-color: #B00020;
+        border: none;
+        color: #FFFFFF;
+    }
+
+    .btn-danger:hover {
+        background-color: #930018;
+        transform: translateY(-2px);
+    }
+
+    /* Form Elemanları */
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #DDDDDD;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #6200EA;
+        box-shadow: 0 0 6px rgba(98, 0, 234, 0.3);
+    }
+
+    /* Tablolar */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table thead th {
+        background-color: #F7F7F7;
+        color: #212121;
+        padding: 10px;
+        text-align: left;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #F3F4F6;
+    }
+
+    .table tbody tr:hover {
+        background-color: #E3F2FD;
+    }
+
+    .table td {
+        padding: 10px;
+    }
+</style>

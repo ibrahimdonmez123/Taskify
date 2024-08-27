@@ -1,0 +1,147 @@
+﻿@model Taskify.Models.LoginUser
+
+@{
+
+    ViewBag.IsLoginPage = true;
+
+    ViewBag.Title = "Login";
+}
+
+<div class="login-container">
+
+    @using (Html.BeginForm("Login", "User", FormMethod.Post, new { @class = "login-form" }))
+    {
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, "E-posta")
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "E-posta adresinizi giriniz" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Password, "Şifre")
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Şifrenizi giriniz" })
+            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+        </div>
+        <button type="submit" class="btn btn-primary">Giriş yap</button>
+    }
+
+    <a href="@Url.Action("Register", "User")" class="btn btn-secondary">Kayıt ol</a>
+
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(".login-form").submit(function (event) {
+                event.preventDefault(); 
+
+                var form = $(this);
+                $.ajax({
+                    type: form.attr("method"),
+                    url: form.attr("action"),
+                    data: form.serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = '/Duties/Index'; 
+                        } else {
+                            alert(response.message); 
+                        }
+                    },
+                    error: function () {
+                        alert("Yönlendirme hatası oluştu.");
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    h2 {
+        text-align: center;
+        margin-top: 120px; 
+        margin-bottom: 10px;
+        font-size: 28px;
+        color: #333;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .login-container {
+        max-width: 400px;
+        margin: 120px auto; 
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .login-form .form-group {
+        margin-bottom: 15px;
+    }
+
+        .login-form .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+    .login-form .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+        .login-form .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,0.1);
+            outline: none;
+        }
+
+    .login-form .text-danger {
+        color: #dc3545;
+        font-size: 12px;
+    }
+
+    .login-form .btn {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .login-form .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        margin-bottom: 10px;
+    }
+
+    .login-form .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        text-align: center;
+        display: block;
+        text-decoration: none;
+    }
+
+    .login-form .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .login-form .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+</style>
